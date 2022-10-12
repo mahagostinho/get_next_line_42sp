@@ -5,11 +5,16 @@
 # include <stdlib.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
+#  define BUFFER_SIZE 256
 # endif
 
 char	*get_next_line(int fd);
-
-// utils
+char 	*ft_read_and_keep(int fd, char *save);
+char    *ft_get_line(char *save);
+char    *ft_save_rest(char *save);
+size_t	ft_strlen(const char *s);
+char	*ft_strchr(const char *s, int c);
+char	*ft_strdup(const char *s);
+char	*ft_strjoin(char const *s1, char const *s2);
 
 #endif
