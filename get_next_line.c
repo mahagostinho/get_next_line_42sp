@@ -1,14 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marcarva <marcarva@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/10/14 20:37:12 by marcarva          #+#    #+#             */
+/*   Updated: 2022/10/14 21:15:12 by marcarva         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-	char *save;
+	static char	*save;
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	save = read_and_save(fd, save);
 	if (!save)
+		save = ft_strdup("");
+	save = read_and_save(fd, save);
+	if (!ft_strlen(save))
 		return (NULL);
 	else
 	{
@@ -18,10 +32,10 @@ char *get_next_line(int fd)
 	return (line);
 }
 
-char *read_and_save(int fd, char *save)
+char	*read_and_save(int fd, char *save)
 {
-	char *buffer;
-	ssize_t bytes_read;
+	char	*buffer;
+	ssize_t	bytes_read;
 
 	bytes_read = 1;
 	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
@@ -44,15 +58,12 @@ char *read_and_save(int fd, char *save)
 
 char	*get_line(char *save)
 {
-	int 	i;
+	int		i;
 	char	*line;
 
 	i = 0;
 	if (!save)
-	{
-		free(save);
 		return (NULL);
-	}
 	while (save[i] && save[i] != '\n')
 		i++;
 	if (save[i] && save[i] == '\n')
@@ -74,7 +85,7 @@ char	*get_line(char *save)
 
 char	*update_save(char *save)
 {
-	size_t 	i;
+	size_t	i;
 	int		j;
 	char	*save_update;
 
