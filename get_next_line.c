@@ -1,65 +1,36 @@
-#define BUFFER_SIZE 5
-#include <stdio.h>
-#include <fcntl.h>
 #include "get_next_line.h"
-
-int main()
-{
-	int fd;
-	char *line;
-
-	printf("Abrindo o arquivo para leitura ...\n");
-	fd = open("teste", O_RDONLY);
-	// para garantir que o arquivo foi aberto corretamente:
-	if (fd < 0)
-	{
-		printf("Erro ao abrir o arquivo\n");
-		return (-1);
-	}
-	printf("Arquivo aberto!\n");
-	line = "";
-	while (line)
-	{
-		line = get_next_line(fd);
-		/*estamos omitindo todos os \n nesse printf, pois a função get_next_line
-		deve incluir um \n no final de cada linha */
-		printf("%s", line);
-	}
-	close(fd);
-	return (0);
-}
 
 char *get_next_line(int fd)
 {
-	static char *save;
-	char 		*line;
+	char *save;
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!save)
-		save = ft_strdup("");
-	line = NULL;
-	save = ft_read_and_keep(fd, save); // ler até encontrar um \n
+	save = read_and_save(fd, save);
 	if (!save)
 		return (NULL);
-	line = ft_get_line(save);  // salvar a linha até o \n
-	save = ft_save_rest(save); // atualizar o ponteiro save com os caracteres após o \n
+	else
+	{
+		line = get_line(save);
+		save = update_save(save);
+	}
 	return (line);
 }
 
-char *ft_read_and_keep(int fd, char *save)
+char *read_and_save(int fd, char *save)
 {
-	size_t	bytes_read;
-	char	*buffer;
+	char *buffer;
+	ssize_t bytes_read;
 
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	bytes_read = 1;
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	bytes_read = 1;
-	while (bytes_read && !ft_strchr(save, '\n'))
+	while (!ft_strchr(save, '\n') && bytes_read != 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1 || bytes_read == 0)
+		if (bytes_read == -1)
 		{
 			free(buffer);
 			return (NULL);
@@ -68,21 +39,23 @@ char *ft_read_and_keep(int fd, char *save)
 		save = ft_strjoin(save, buffer);
 	}
 	free(buffer);
-	printf("%ld\n", ft_strlen(save));
 	return (save);
 }
 
-char    *ft_get_line(char *save)
+char	*get_line(char *save)
 {
+	int 	i;
 	char	*line;
-	int		i;
 
 	i = 0;
 	if (!save)
+	{
+		free(save);
 		return (NULL);
+	}
 	while (save[i] && save[i] != '\n')
 		i++;
-	if (save[i] == '\n')
+	if (save[i] && save[i] == '\n')
 		i++;
 	line = (char *)malloc(sizeof(char) * (i + 1));
 	if (!line)
@@ -90,33 +63,33 @@ char    *ft_get_line(char *save)
 	i = 0;
 	while (save[i] && save[i] != '\n')
 	{
-		line[i] = save[i];
+		line [i] = save[i];
 		i++;
 	}
 	if (save[i] == '\n')
-		line[i++] = '\n';
-	line[i] = '\0';
+		line[i] = '\n';
+	line[++i] = '\0';
 	return (line);
 }
 
-char    *ft_save_rest(char *save)
+char	*update_save(char *save)
 {
-	char	*rest;
-	int		i;
+	size_t 	i;
 	int		j;
-	
+	char	*save_update;
+
 	i = 0;
-	while(save && save[i] != '\n')
+	j = 0;
+	while (save[i] && save[i] != '\n')
 		i++;
-	if (save[i] == '\n')
+	if (save[i] && save[i] == '\n')
 		i++;
-	rest = malloc(sizeof(char) * (ft_strlen(save)- i + 1));
-	if (!rest)
+	save_update = (char *)malloc(sizeof(char) * (ft_strlen(save) - i + 1));
+	if (!save_update)
 		return (NULL);
-	j =0;
 	while (save[i])
-		rest[j++] = save[i++];
-	rest[j] = '\0';
+		save_update[j++] = save[i++];
+	save_update[j] = '\0';
 	free(save);
-	return (rest);
+	return (save_update);
 }
