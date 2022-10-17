@@ -1,6 +1,6 @@
 NAME = get_next_line
 
-SIZE = 5
+SIZE = 10000000
 
 all: $(NAME)
 

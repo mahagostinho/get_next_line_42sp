@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marcarva <marcarva@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/10/14 20:39:27 by marcarva          #+#    #+#             */
+/*   Updated: 2022/10/14 20:41:51 by marcarva         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include <stdio.h>
 #include <fcntl.h>
 #include "get_next_line.h"
@@ -7,14 +18,11 @@ int	main(void)
 	int		fd;
 	char	*line;
 
-	fd = open("teste", O_RDONLY);
-	//inicializar a variável para poder usá-la no loop abaixo
+	fd = open("bigline_wl", O_RDONLY);
 	line = "";
 	while (line)
 	{
 		line = get_next_line(fd);
-		/*estamos omitindo todos os \n nesse printf, pois a função get_next_line
-		deve incluir um \n no final de cada linha */
 		printf("%s", line);
 	}
 	fd = close(fd);

@@ -17,7 +17,7 @@ char	*get_next_line(int fd)
 	static char	*save;
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 		return (NULL);
 	if (!save)
 		save = ft_strdup("");
@@ -68,7 +68,7 @@ char	*get_line(char *save)
 		i++;
 	if (save[i] && save[i] == '\n')
 		i++;
-	line = (char *)malloc(sizeof(char) * (i + 1));
+	line = malloc(sizeof(char) * (i + 1));
 	if (!line)
 		return (NULL);
 	i = 0;
@@ -78,8 +78,8 @@ char	*get_line(char *save)
 		i++;
 	}
 	if (save[i] == '\n')
-		line[i] = '\n';
-	line[++i] = '\0';
+		line[i++] = '\n';
+	line[i] = '\0';
 	return (line);
 }
 
@@ -93,11 +93,18 @@ char	*update_save(char *save)
 	j = 0;
 	while (save[i] && save[i] != '\n')
 		i++;
-	if (save[i] && save[i] == '\n')
-		i++;
+	if (!save[i])
+	{
+		free(save);
+		return (NULL);
+	}
 	save_update = (char *)malloc(sizeof(char) * (ft_strlen(save) - i + 1));
 	if (!save_update)
+	{
+		free (save);
 		return (NULL);
+	}
+	i++;
 	while (save[i])
 		save_update[j++] = save[i++];
 	save_update[j] = '\0';
