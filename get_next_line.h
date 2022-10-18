@@ -6,7 +6,7 @@
 /*   By: marcarva <marcarva@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 11:07:24 by marcarva          #+#    #+#             */
-/*   Updated: 2022/10/18 16:48:05 by marcarva         ###   ########.fr       */
+/*   Updated: 2022/10/18 20:34:03 by marcarva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,12 @@
 #  define BUFFER_SIZE 5
 # endif
 
+char	*ft_get_line(char *save);
+char	*ft_update(char *save);
+char	*ft_read_line(int fd, char *save);
 char	*get_next_line(int fd);
-char	*read_and_save(int fd, char *str_join);
-char	*get_line(char *old_save);
-char	*update_save(char *old_save);
-size_t	ft_strlen(const char *s);
-void	*ft_calloc(size_t nmemb, size_t size);
-char	*ft_strjoin(char const *s1, char const *s2);
-int		find_new_line(const char *s);
+size_t	ft_strlen(char *s);
+char	*ft_strchr(char *s, int c);
+char	*ft_strjoin(char *s1, char *s2);
 
 #endif
