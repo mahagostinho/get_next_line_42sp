@@ -18,13 +18,14 @@ int	main(void)
 	int		fd;
 	char	*line;
 
-	fd = open("bigline_wl", O_RDONLY);
+	fd = open("coming_back_to_life", O_RDONLY);
 	line = "";
 	while (line)
 	{
 		line = get_next_line(fd);
 		printf("%s", line);
 	}
+	free(line);
 	fd = close(fd);
 	return (0);
 }
