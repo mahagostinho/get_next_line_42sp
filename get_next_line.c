@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcarva <marcarva@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/14 20:37:12 by marcarva          #+#    #+#             */
-/*   Updated: 2022/10/14 21:15:12 by marcarva         ###   ########.fr       */
+/*   Created: 2022/10/18 11:07:11 by marcarva          #+#    #+#             */
+/*   Updated: 2022/10/18 17:03:12 by marcarva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,97 +17,103 @@ char	*get_next_line(int fd)
 	static char	*save;
 	char		*line;
 
+	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!save)
-		save = ft_strdup("");
+		save = ft_calloc(1, 1);
 	save = read_and_save(fd, save);
 	if (!ft_strlen(save))
 	{
 		free(save);
 		return (NULL);
 	}
-	line = get_line(save);
-	save = update_save(save);
+	else
+	{
+		line = get_line(save);
+		save = update_save(save);
+	}
 	return (line);
 }
 
-char	*read_and_save(int fd, char *save)
+char	*read_and_save(int fd, char *join_save)
 {
 	char	*buffer;
-	ssize_t	bytes_read;
+	ssize_t	reader;
 
-	bytes_read = 1;
-	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	buffer = ft_calloc(1, (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	while (!ft_strchr(save, '\n'))
+	while (!find_new_line(join_save))
 	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read <= 0)
-			break ;
-		buffer[bytes_read] = '\0';
-		save = ft_strjoin(save, buffer);
-		if (!save)
+		reader = read(fd, buffer, BUFFER_SIZE);
+		if (reader == -1)
+		{
+			free(buffer);
+			return (NULL);
+		}
+		if (reader == 0)
+		{
+			free(buffer);
+			return (join_save);
+		}
+		join_save = ft_strjoin(join_save, buffer);
+		if (!join_save)
 		{
 			free(buffer);
 			return (NULL);
 		}
 	}
 	free(buffer);
-	return (save);
+	return (join_save);
 }
 
-char	*get_line(char *save)
+char	*get_line(char *old_save)
 {
-	int	i;
 	char	*line;
+	int		i;
 
 	i = 0;
-	if (!save)
+	if (!old_save)
 		return (NULL);
-	while (save[i] && save[i] != '\n')
+	while (old_save[i] && old_save[i] != '\n')
 		i++;
-	if (save[i] == '\n')
+	if (old_save[i] == '\n')
 		i++;
-	line = malloc(sizeof(char) * (i + 1));
+	line = ft_calloc(1, (i + 1));
 	if (!line)
 		return (NULL);
 	i = 0;
-	while (save[i] && save[i] != '\n')
+	while (old_save[i] && old_save[i] != '\n')
 	{
-		line [i] = save[i];
+		line[i] = old_save[i];
 		i++;
 	}
-	if (save[i] == '\n')
-		line[i++] = '\n';
-	line[i] = '\0';
+	if (old_save[i] == '\n')
+		line[i] = '\n';
 	return (line);
 }
 
-char	*update_save(char *save)
+char	*update_save(char *old_save)
 {
-	size_t	i;
-	size_t	j;
-	char	*save_update;
+	char	*updated;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
-	while (save[i] && save[i] != '\n')
-		i++;
-	if (save[i] == '\n')
-		i++;
-	if (!save[i])
-	{
-		free(save);
+	updated = NULL;
+	if (!old_save)
 		return (NULL);
-	}
-	save_update = (char *)malloc(sizeof(char) * (ft_strlen(save) - i + 1));
-	if (!save_update)
+	while (old_save[i] && old_save[i] != '\n')
+		i++;
+	if (old_save[i] == '\n')
+		i++;
+	updated = ft_calloc(1, (ft_strlen(old_save) - i + 1));
+	if (!updated)
 		return (NULL);
-	while (save[i])
-		save_update[j++] = save[i++];
-	save_update[j] = '\0';
-	free(save);
-	return (save_update);
+	while (old_save[i] != '\0')
+		updated[j++] = old_save[i++];
+	free(old_save);
+	return (updated);
 }

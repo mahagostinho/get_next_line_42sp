@@ -5,20 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcarva <marcarva@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/14 20:39:27 by marcarva          #+#    #+#             */
-/*   Updated: 2022/10/14 20:41:51 by marcarva         ###   ########.fr       */
+/*   Created: 2022/10/18 11:07:44 by marcarva          #+#    #+#             */
+/*   Updated: 2022/10/18 11:07:53 by marcarva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <stdio.h>
 #include <fcntl.h>
 #include "get_next_line.h"
 
 int	main(void)
 {
-	int		fd;
+	int	fd;
 	char	*line;
 
-	fd = open("coming_back_to_life", O_RDONLY);
+	fd = open("teste", O_RDONLY);
 	line = "";
 	while (line)
 	{
