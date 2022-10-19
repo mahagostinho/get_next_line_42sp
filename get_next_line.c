@@ -6,7 +6,7 @@
 /*   By: marcarva <marcarva@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 11:07:11 by marcarva          #+#    #+#             */
-/*   Updated: 2022/10/18 20:40:18 by marcarva         ###   ########.fr       */
+/*   Updated: 2022/10/19 18:35:17 by marcarva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ char	*get_next_line(int fd)
 		line = ft_get_line(save);
 		save = ft_update(save);
 	}
-	if (!save)
-		return (NULL);
 	return (line);
 }
 
@@ -42,6 +40,8 @@ char	*ft_read_line(int fd, char *save)
 	int		reader;
 
 	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
 	while (!ft_strchr(save, '\n'))
 	{
 		reader = read (fd, buffer, BUFFER_SIZE);
